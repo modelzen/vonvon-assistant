@@ -20,7 +20,7 @@
 1. 把本仓库里的 [SETUP-RECIPE.md](SETUP-RECIPE.md) 链接（或全文）发给你的 Bot **私聊**；
 2. 对它说：
 
-   > 照这份配方帮我建一个 Vonvon 助手群。
+   > 照这份配方帮我建一个 vonvon 帮助与反馈群。
 
 3. 打开建好的飞书群，发一句 **「开始初始化」**（或直接提问），`vonvon-setup` 会主动带你走完初始化。
 
@@ -30,7 +30,7 @@
    ```bash
    git clone https://github.com/modelzen/vonvon-assistant.git ~/vonvon-assistant
    ```
-2. 在 Vonvon Bot 客户端里新建一个飞书群（或绑定一个**仅含你自己**的飞书群）：
+2. 在 Vonvon Bot 客户端里新建一个飞书群（建议命名为 **`vonvon 帮助与反馈`**，或绑定一个**仅含你自己**的飞书群）：
    - **主工作区**：选择刚才克隆的 `~/vonvon-assistant`
    - **会话方式**：推荐「多会话（@ 我开新会话）」，也可按习惯选「智能」
    - **执行权限**：
