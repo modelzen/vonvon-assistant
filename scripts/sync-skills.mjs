@@ -8,6 +8,7 @@ const agentsSkillsDir = join(root, '.agents', 'skills');
 const claudeSkillsDir = join(root, '.claude', 'skills');
 const agentsDoc = join(root, 'AGENTS.md');
 const claudeDoc = join(root, 'CLAUDE.md');
+const manifestPath = join(root, 'vonvon-bot.json');
 const MAX_SKILL_BYTES = 128 * 1024;
 const checkOnly = process.argv.includes('--check');
 
@@ -39,7 +40,7 @@ async function validateSkills(dir) {
   const skillDirs = entries.filter(e => e.isDirectory()).map(e => e.name).sort();
   if (skillDirs.length === 0) {
     errors.push(`No skills found in ${relative(root, dir)}`);
-    return errors;
+    return { errors, skillDirs };
   }
   for (const skillName of skillDirs) {
     const file = join(dir, skillName, 'SKILL.md');
@@ -71,6 +72,48 @@ async function validateSkills(dir) {
     }
     if (!parsedDesc) errors.push(`${relative(root, file)} is missing frontmatter 'description'`);
   }
+  return { errors, skillDirs };
+}
+
+async function validateManifest(skillDirs) {
+  const errors = [];
+  let raw;
+  try {
+    raw = await readFile(manifestPath, 'utf8');
+  } catch {
+    return ['Missing vonvon-bot.json'];
+  }
+  let manifest;
+  try {
+    manifest = JSON.parse(raw);
+  } catch (err) {
+    return [`Invalid JSON in vonvon-bot.json: ${err.message}`];
+  }
+  if (manifest.schemaVersion !== 1) errors.push('vonvon-bot.json: schemaVersion must be 1');
+  for (const field of ['id', 'kind', 'name', 'summary']) {
+    if (typeof manifest[field] !== 'string' || !manifest[field].trim()) {
+      errors.push(`vonvon-bot.json: missing non-empty '${field}'`);
+    }
+  }
+  if (manifest.files && typeof manifest.files === 'object') {
+    for (const [key, relPath] of Object.entries(manifest.files)) {
+      if (typeof relPath !== 'string' || !relPath.trim()) {
+        errors.push(`vonvon-bot.json: files.${key} must be a non-empty path`);
+        continue;
+      }
+      const exists = await stat(join(root, relPath)).then(s => s.isFile()).catch(() => false);
+      if (!exists) errors.push(`vonvon-bot.json: files.${key} target not found (${relPath})`);
+    }
+  }
+  if (!Array.isArray(manifest.skills)) {
+    errors.push('vonvon-bot.json: skills must be an array');
+  } else {
+    const declared = manifest.skills.map(s => s?.name).filter(Boolean).sort();
+    const expected = [...skillDirs].sort();
+    if (JSON.stringify(declared) !== JSON.stringify(expected)) {
+      errors.push(`vonvon-bot.json: skills [${declared.join(', ')}] do not match .agents/skills [${expected.join(', ')}]`);
+    }
+  }
   return errors;
 }
 
@@ -96,7 +139,9 @@ async function compareDirs(src, dst) {
 }
 
 async function main() {
-  const validationErrors = await validateSkills(agentsSkillsDir);
+  const { errors: skillErrors, skillDirs } = await validateSkills(agentsSkillsDir);
+  const manifestErrors = await validateManifest(skillDirs);
+  const validationErrors = [...skillErrors, ...manifestErrors];
   if (validationErrors.length) {
     for (const err of validationErrors) console.error(`[ERROR] ${err}`);
     process.exit(1);
@@ -116,7 +161,7 @@ async function main() {
       console.error('Run `node scripts/sync-skills.mjs` to synchronize.');
       process.exit(1);
     }
-    console.log('OK: skills frontmatter valid, .agents/skills == .claude/skills, AGENTS.md == CLAUDE.md.');
+    console.log('OK: vonvon-bot.json valid, skills frontmatter valid, .agents/skills == .claude/skills, AGENTS.md == CLAUDE.md.');
     return;
   }
 

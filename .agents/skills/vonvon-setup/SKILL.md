@@ -7,7 +7,7 @@ description: 统一承接所有正式工作前与对外分享前的交互式预�
 
 本 Skill 统一负责**所有正式工作前与对外分享前要预先准备好的事情**：
 1. **用户工作前预准备（A / B 两档，极简按需）**：拉源码用于答疑与排错，按需决定是否配置 `gh` 命令行直提 Issue；
-2. **助手仓库发布/分享前预准备（模块 0，维护者模式）**：自动检测并替换 `README.md`、`SETUP-RECIPE.md` 中的占位仓库地址、校验双端 Skill 同步、按需补齐 `LICENSE` 与配置远端仓库。
+2. **助手仓库发布/分享前预准备（模块 0，维护者模式）**：核对并更新 `vonvon-bot.json` 与 `README.md` 中的仓库地址、校验配方清单与双端 Skill 同步、按需补齐 `LICENSE` 与配置远端仓库。
 
 > **【关键体验要求：一口气完成体检再回复】**
 > 执行第一步只读体检时，**不要先发一句「我先检查一下初始化状态」就结束回合让用户追问**！必须在同一轮里跑完所有只读检查，一次性向用户输出简明体检结果和清晰选项。
@@ -22,9 +22,9 @@ description: 统一承接所有正式工作前与对外分享前的交互式预�
 
 1. **助手仓库自身状态（本目录 `.`）**：
    - 检查 `git remote get-url origin` 是否已配置；
-   - 检查 `README.md`、`SETUP-RECIPE.md` 中是否仍存在未替换的占位符（`<本仓库地址>`、`<vonvon-assistant 仓库地址>`）；
+   - 检查 `vonvon-bot.json` 中的 `repository` 与 `README.md` 中的仓库地址是否仍为占位符或与 `origin` 不一致；
    - 检查 `LICENSE` 是否存在；
-   - 若本机有 Node，运行 `node scripts/sync-skills.mjs --check` 检查 `.agents/skills` 与 `.claude/skills`、`AGENTS.md` 与 `CLAUDE.md` 是否一致。
+   - 若本机有 Node，运行 `node scripts/sync-skills.mjs --check` 检查 `vonvon-bot.json`、`.agents/skills` 与 `.claude/skills`、`AGENTS.md` 与 `CLAUDE.md` 是否一致。
 2. **系统与权限能力**：
    - 检查 OS 与 CPU 架构（macOS / Linux / Windows）；
    - 检查当前会话是否能联网、能否写 `workspace/`、能否只读查看 `~/.vonvon-bot/logs/`（用于判断权限档位；**严禁读取 `~/.vonvon-bot/` 下的任何密钥与凭据文件**）。
@@ -44,7 +44,7 @@ description: 统一承接所有正式工作前与对外分享前的交互式预�
 
 - **A（推荐起步，几乎零依赖）**：浅克隆 `modelzen/vonvon-bot` 文档与源码（几秒完成），立刻开启**问题答疑、本地排错**，提 Issue 时用**预填网页链接**一键提交（不需要安装 `gh` 或 Node 依赖）。
 - **B（命令行直提 Issue，可选）**：在 A 的基础上配置并登录 GitHub CLI（`gh`），之后可以在飞书群里直接一键发布 Issue 或给已有 Issue 补发复现评论。
-- **0（仅当检测到占位地址 / 未配远端 / 未同步时展示，维护者对外分享前准备）**：配置本仓库远端、自动替换 `README.md` 和 `SETUP-RECIPE.md` 占位地址、按需补 `LICENSE` 并校验双端 Skill 同步。
+- **0（仅当检测到未配远端 / 地址不一致 / 清单或双端未同步时展示，维护者对外分享前准备）**：配置本仓库远端、同步更新 `vonvon-bot.json` 与 `README.md` 中的仓库地址、按需补 `LICENSE` 并校验配方清单与双端 Skill 同步。
 
 结尾明确给出短回复提示：
 > 「直接回复 **A** 或 **B**（需要对外分享可回 **0**）我就帮你配好；只是先随便看看也可以回 **本次先跳过**。」
@@ -60,8 +60,8 @@ description: 统一承接所有正式工作前与对外分享前的交互式预�
 1. **确定本助手仓库的真实地址**：
    - 若本目录已配置 `origin` remote，优先从 `git remote get-url origin` 推导 HTTPS 地址并向用户确认；
    - 若尚未配置远端，询问用户：已有地址则直接 `git remote add origin <url>`；还没建远端且已登录 `gh`，经确认后运行 `gh repo create` 建仓并关联 `origin`。
-2. **自动替换占位地址**：
-   - 将 `README.md` 中的 `<本仓库地址>` 与 `SETUP-RECIPE.md` 中的 `<vonvon-assistant 仓库地址>` 替换为真实 clone 地址；
+2. **自动同步仓库地址**：
+   - 将 `vonvon-bot.json` 的 `repository` 与 `README.md` 中的仓库地址更新为真实仓库地址；
    - 若用户指定了自定义的上游 `vonvon-bot` 地址（如内部镜像），询问是仅写入本机 `workspace/setup-state.json` 还是同步更新文档。
 3. **补齐协议与双端校验**：
    - 若尚无 `LICENSE`，询问是否添加开源协议（如 Apache-2.0）及版权归属名称；
