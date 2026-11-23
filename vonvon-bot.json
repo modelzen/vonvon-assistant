@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "id": "vonvon-assistant",
   "kind": "group",
-  "name": "Vonvon 帮助与反馈助手",
+  "name": "vonvon 帮助与反馈",
   "summary": "1 群 + 1 Bot + 4 个 Skill，全程引导完成 Vonvon Bot 初始化、源码答疑、本地排错与脱敏提 Issue。",
   "version": "0.1.0",
   "author": {
@@ -24,8 +24,7 @@
     "firstMessage": "开始初始化"
   },
   "files": {
-    "readme": "README.md",
-    "supplement": "supplement.md"
+    "readme": "README.md"
   },
   "skills": [
     {
