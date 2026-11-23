@@ -25,10 +25,10 @@
 
 如果主人还没有把 `vonvon-assistant` 克隆到本地：
 
-- 优先从主人发来的文档链接中自动识别仓库地址；否则使用 `<vonvon-assistant 仓库地址>`（若仍为占位符且主人未提供链接，请先向主人确认仓库地址或已有本地路径）；
+- 优先从主人发来的文档链接中自动识别仓库地址；否则默认使用 `https://github.com/modelzen/vonvon-assistant.git`；
 - 克隆到选定路径（例如 `~/vonvon-assistant`）：
   ```bash
-  git clone <vonvon-assistant 仓库地址> ~/vonvon-assistant
+  git clone https://github.com/modelzen/vonvon-assistant.git ~/vonvon-assistant
   ```
 - 确认目标目录下存在 `.agents/skills/`（或 `.claude/skills/`）和 `AGENTS.md` / `CLAUDE.md`。
 

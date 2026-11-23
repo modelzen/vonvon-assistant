@@ -28,7 +28,7 @@
 
 1. 把本仓库克隆到本地任意目录（例如 `~/vonvon-assistant`）：
    ```bash
-   git clone <本仓库地址> ~/vonvon-assistant
+   git clone https://github.com/modelzen/vonvon-assistant.git ~/vonvon-assistant
    ```
 2. 在 Vonvon Bot 客户端里新建一个飞书群（或绑定一个**仅含你自己**的飞书群）：
    - **主工作区**：选择刚才克隆的 `~/vonvon-assistant`
