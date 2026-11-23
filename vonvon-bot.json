@@ -19,8 +19,9 @@
   "defaults": {
     "groupName": "vonvon 帮助与反馈",
     "conversation": "multi",
+    "response": "all",
     "permission": "full",
-    "permissionNote": "自动只读排查本机日志需要完全访问（仅限个人私有群）；保守使用可选工作区可写。",
+    "permissionNote": "自动只读排查本机日志需要完全访问（仅限个人私有群）；保守使用可在建群后切为工作区可写（permission.mode=write）。",
     "firstMessage": "开始初始化"
   },
   "files": {
