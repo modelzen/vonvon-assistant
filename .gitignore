@@ -1,5 +1,8 @@
-# 按需拉取的 vonvon-bot 源码、隔离 worktree 与本机初始化状态
-workspace/
+# workspace/ 中仅跟踪随配方安装的文件
+/workspace/*
+!/workspace/.gitignore
+!/workspace/AGENTS.md
+!/workspace/CLAUDE.md
 
 # 系统与编辑器临时文件
 .DS_Store

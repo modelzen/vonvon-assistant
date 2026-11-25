@@ -7,7 +7,7 @@ description: 统一承接所有正式工作前与对外分享前的交互式预�
 
 本 Skill 统一负责**所有正式工作前与对外分享前要预先准备好的事情**：
 1. **用户工作前预准备（A / B 两档，极简按需）**：拉源码用于答疑与排错，按需决定是否配置 `gh` 命令行直提 Issue；
-2. **助手仓库发布/分享前预准备（模块 0，维护者模式）**：核对并更新 `vonvon-bot.json` 与 `README.md` 中的仓库地址、校验配方清单与双端 Skill 同步、按需补齐 `LICENSE` 与配置远端仓库。
+2. **助手仓库发布/分享前准备（模块 0，维护者模式）**：核对仓库地址、校验配方目录，按需补齐 `LICENSE` 与配置远端仓库。
 
 > **【关键体验要求：一口气完成体检再回复】**
 > 执行第一步只读体检时，**不要先发一句「我先检查一下初始化状态」就结束回合让用户追问**！必须在同一轮里跑完所有只读检查，一次性向用户输出简明体检结果和清晰选项。
@@ -20,11 +20,11 @@ description: 统一承接所有正式工作前与对外分享前的交互式预�
 
 执行只读检查（不修改文件、不安装软件）：
 
-1. **助手仓库自身状态（本目录 `.`）**：
+1. **配方源仓库（仅当当前目录同时有 `vonvon-bot.json` 和 `skills/` 时检查）**：
    - 检查 `git remote get-url origin` 是否已配置；
    - 检查 `vonvon-bot.json` 中的 `repository` 与 `README.md` 中的仓库地址是否仍为占位符或与 `origin` 不一致；
    - 检查 `LICENSE` 是否存在；
-   - 若本机有 Node，运行 `node scripts/sync-skills.mjs --check` 检查 `vonvon-bot.json`、`.agents/skills` 与 `.claude/skills`、`AGENTS.md` 与 `CLAUDE.md` 是否一致。
+   - 若本机可用 Vonvon CLI，运行 `vonvon template inspect .` 校验清单、技能和工作区文件。已安装的群工作区通过 `.vonvon-template.json` 获取导入来源，无需检查 Git 远端或运行维护命令。
 2. **系统与权限能力**：
    - 检查 OS 与 CPU 架构（macOS / Linux / Windows）；
    - 检查当前会话是否能联网、能否写 `workspace/`、能否只读查看 `~/.vonvon-bot/logs/`（用于判断权限档位；**严禁读取 `~/.vonvon-bot/` 下的任何密钥与凭据文件**）。
@@ -44,7 +44,7 @@ description: 统一承接所有正式工作前与对外分享前的交互式预�
 
 - **A（推荐起步，几乎零依赖）**：浅克隆 `modelzen/vonvon-bot` 文档与源码（几秒完成），立刻开启**问题答疑、本地排错**，提 Issue 时用**预填网页链接**一键提交（不需要安装 `gh` 或 Node 依赖）。
 - **B（命令行直提 Issue，可选）**：在 A 的基础上配置并登录 GitHub CLI（`gh`），之后可以在飞书群里直接一键发布 Issue 或给已有 Issue 补发复现评论。
-- **0（仅当检测到未配远端 / 地址不一致 / 清单或双端未同步时展示，维护者对外分享前准备）**：配置本仓库远端、同步更新 `vonvon-bot.json` 与 `README.md` 中的仓库地址、按需补 `LICENSE` 并校验配方清单与双端 Skill 同步。
+- **0（仅在维护配方源仓库时展示）**：配置仓库远端、更新 `vonvon-bot.json` 与 `README.md` 中的仓库地址、按需补 `LICENSE` 并校验配方。
 
 结尾明确给出短回复提示：
 > 「直接回复 **A** 或 **B**（需要对外分享可回 **0**）我就帮你配好；只是先随便看看也可以回 **本次先跳过**。」
@@ -63,9 +63,9 @@ description: 统一承接所有正式工作前与对外分享前的交互式预�
 2. **自动同步仓库地址**：
    - 将 `vonvon-bot.json` 的 `repository` 与 `README.md` 中的仓库地址更新为真实仓库地址；
    - 若用户指定了自定义的上游 `vonvon-bot` 地址（如内部镜像），询问是仅写入本机 `workspace/setup-state.json` 还是同步更新文档。
-3. **补齐协议与双端校验**：
+3. **补齐协议与校验配方**：
    - 若尚无 `LICENSE`，询问是否添加开源协议（如 Apache-2.0）及版权归属名称；
-   - 运行 `node scripts/sync-skills.mjs && node scripts/sync-skills.mjs --check`，确保双端完全一致。
+   - 运行 `vonvon template inspect .`。在空的临时目录试导入后，检查 `.agents/skills/` 和 `.claude/skills/` 是否都含清单里的技能。技能只在源仓库的 `skills/` 下编辑。
 4. **预览并经确认后提交/推送**：
    - 展示 `git status` 与 `git diff` 摘要，经用户明确确认后再执行 `git add`、`git commit` 与（可选）`git push`。
 
@@ -112,7 +112,7 @@ description: 统一承接所有正式工作前与对外分享前的交互式预�
 
 ## 第四步：日常更新与收尾引导
 
-- **更新助手本身**：检查根目录 `git status` 干净后运行 `git pull --ff-only`，提示新话题生效。
+- **更新助手本身**：如果这是通过配方导入的群工作区，从 `.vonvon-template.json` 确认来源，使用 Vonvon 的配方升级入口更新已有群。先核对技能和工作区文件的冲突，取得用户同意再覆盖已有技能。若正在维护配方源仓库，检查 `git status` 干净后使用 `git pull --ff-only`，再用该配方升级群工作区。
 - **更新本地 `vonvon-bot` 源码**：检查 `<repoPath>` 工作区干净后运行 `git -C <repoPath> fetch --depth 1 origin main && git -C <repoPath> reset --hard origin/main`。
 - **替换地址**：随时支持切换助手远端或上游目标仓库地址并同步写回 `workspace/setup-state.json`。
 - **收尾主动引导**：

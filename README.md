@@ -2,6 +2,8 @@
 
 给 [Vonvon Bot](https://github.com/modelzen/vonvon-bot) 用户用的飞书随身助手群。
 
+使用示例和建群步骤见 [飞书配方介绍](https://my.feishu.cn/docx/FyoGdja6BoqMZzxe8mucQljJnOb)。
+
 在飞书里建一个专属的 **「vonvon 帮助与反馈」** 群，遇到安装配置疑问、本地运行异常，或者想提 Bug / 功能建议时，直接在这个群里找你自己的 Bot：
 
 - **问题答疑**：对照真实源码和官方文档回答用法与配置问题，并区分当前正式版与未发布改动。
@@ -47,26 +49,29 @@
 ---
 
 <details>
-<summary>手动建群（不通过私聊）</summary>
+<summary>手动准备工作区（不通过私聊）</summary>
 
-1. 克隆本仓库到本地任意目录（例如 `~/vonvon-assistant`）：
+1. 克隆配方仓库，再把配方导入一个新的群工作区。Vonvon 会按 Codex 和 Claude 的目录结构安装技能。
    ```bash
    git clone https://github.com/modelzen/vonvon-assistant.git ~/vonvon-assistant
+   vonvon template stage ~/vonvon-assistant --dest ~/vonvon-help-workspace --mode fresh --source-url https://github.com/modelzen/vonvon-assistant
    ```
 2. 在 Vonvon Bot 客户端新建一个仅含你自己的飞书群（建议命名为 **`vonvon 帮助与反馈`**）：
-   - **主工作区**：选择 `~/vonvon-assistant`（支持 Codex 与 Claude，macOS / Linux / Windows 通用）
+   - **主工作区**：选择 `~/vonvon-help-workspace`（支持 Codex 与 Claude，macOS / Linux / Windows 通用）
    - **会话方式**：推荐「多会话（@ 我开新会话，话题内免 @）」，也可按习惯选「智能」
    - **执行权限**：需要自动查日志选「完全访问」（仅限个人群），更保守可选「工作区可写」
 3. 进群后发一句「开始初始化」或直接提问即可。
 
+已经在用旧版时，把同一个配方链接发给 Vonvon，选择升级已有群。如果你之前直接把旧版仓库当作群工作区，可以在原目录旁建一个新的工作区，先用新配方导入技能，再按需复用原来的 Vonvon 源码目录。
+
 </details>
 
 <details>
-<summary>仓库结构与维护校验</summary>
+<summary>Vonvon 配方目录与校验</summary>
 
-- `vonvon-bot.json`：声明式配方清单（元数据、推荐配置与 Skill 列表）
-- `AGENTS.md` / `CLAUDE.md`：群工作区规则与安全红线
-- `.agents/skills/` & `.claude/skills/`：`vonvon-setup`、`vonvon-qa`、`vonvon-diagnose`、`vonvon-feedback`（实体副本，无符号链接）
-- 维护校验：`node scripts/sync-skills.mjs && node scripts/sync-skills.mjs --check`
+- `vonvon-bot.json` 声明配方版本、建群建议和技能清单。
+- `skills/` 存放 `vonvon-setup`、`vonvon-qa`、`vonvon-diagnose` 和 `vonvon-feedback`。每个技能只维护一份，导入时由 Vonvon 安装到两个后端。
+- `workspace/` 存放导入时写入群工作区的 `AGENTS.md`、`CLAUDE.md` 和 `.gitignore`。
+- 在仓库根目录运行 `vonvon template inspect .` 校验配方。
 
 </details>

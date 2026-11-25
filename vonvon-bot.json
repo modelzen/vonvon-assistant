@@ -1,43 +1,41 @@
 {
   "schemaVersion": 1,
   "id": "vonvon-assistant",
-  "kind": "group",
+  "version": "0.2.0",
+  "public": true,
   "name": "vonvon 帮助与反馈",
   "summary": "1 群 + 1 Bot + 4 个 Skill，全程引导完成 Vonvon Bot 初始化、源码答疑、本地排错与脱敏提 Issue。",
-  "version": "0.1.0",
+  "tags": [
+    "support",
+    "troubleshooting",
+    "feishu",
+    "github-issue"
+  ],
   "author": {
     "name": "modelzen",
     "url": "https://github.com/modelzen"
   },
   "repository": "https://github.com/modelzen/vonvon-assistant",
-  "tags": ["support", "troubleshooting", "feishu", "github-issue"],
+  "docUrl": "https://my.feishu.cn/docx/FyoGdja6BoqMZzxe8mucQljJnOb",
   "compatibility": {
     "vonvonMinVersion": "0.10.0",
-    "providers": ["codex", "claude"],
-    "platforms": ["macos", "linux", "windows"]
+    "providers": [
+      "codex",
+      "claude"
+    ],
+    "platforms": [
+      "macos",
+      "linux",
+      "windows"
+    ]
   },
-  "defaults": {
-    "groupName": "vonvon 帮助与反馈",
-    "conversation": "multi",
-    "response": "all",
-    "permission": "full",
+  "group": {
+    "defaultName": "vonvon 帮助与反馈",
+    "recommendedPermission": "full",
     "permissionNote": "自动只读排查本机日志需要完全访问（仅限个人私有群）；保守使用可在建群后切为工作区可写（permission.mode=write）。",
     "firstMessage": "开始初始化"
   },
-  "files": {
-    "readme": "README.md"
-  },
   "skills": [
-    {
-      "name": "vonvon-setup",
-      "title": "环境预准备与更新",
-      "description": "一次性体检并按需配置源码与 gh"
-    },
-    {
-      "name": "vonvon-qa",
-      "title": "问题答疑",
-      "description": "基于真实源码与官方文档答疑"
-    },
     {
       "name": "vonvon-diagnose",
       "title": "本地问题排错",
@@ -47,6 +45,16 @@
       "name": "vonvon-feedback",
       "title": "高质量反馈",
       "description": "查重、主动把关、默认带图脱敏提 Issue"
+    },
+    {
+      "name": "vonvon-qa",
+      "title": "问题答疑",
+      "description": "基于真实源码与官方文档答疑"
+    },
+    {
+      "name": "vonvon-setup",
+      "title": "环境预准备与更新",
+      "description": "一次性体检并按需配置源码与 gh"
     }
   ]
 }
